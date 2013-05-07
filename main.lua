@@ -3,23 +3,37 @@
 
 require 'getData'
 
+local seed = 1;
+torch.manualSeed(seed);
+
 local fname = 'bars';
+--local fname = 'blockImages'
+--local fname = 'mnist'
 local showData = 1;
 local options;
 
 if 'bars' == fname then
 	local nObs = 100;
-	local imSize = 3;
-	options  = {nObs, imSize}
+	local imSize = 9; -- use 3x3 images
+	options  = {nObs, imSize} 
 	
-elseif 'blocks' == fname then
-	options = {};
+elseif 'blockImages' == fname then
+	local nObs = 100;
+	local imSize = 36; -- use 6x6 images
+	options  = {nObs, imSize}
 	
 elseif 'mnist' == fname then
 	options = {};	
 	
 else
-	error('Unknown data type');
+	error('**Error: Unknown data type');
 end;
 
-x,y = getData(fname,options,showData)
+-- Get training data
+X = getData(fname,options,showData)
+
+
+
+
+
+
