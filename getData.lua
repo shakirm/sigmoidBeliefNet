@@ -29,7 +29,7 @@ function getData(fname, options, plot)
 			  d:apply(function(x) return 1 - x end)
 		   end
 		   
-		   gnuplot.imagesc(d);
+		   --gnuplot.imagesc(d);
 		   local tmp = d:resize(1,imSize*imSize);
 		   x[{{i},{}}] = tmp:clone();
 		end;

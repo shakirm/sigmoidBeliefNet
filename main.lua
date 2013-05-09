@@ -2,6 +2,8 @@
 -- Shakir, May 2013
 
 require 'getData'
+require 'testpdf'
+require 'slicesample'
 
 local seed = 1;
 torch.manualSeed(seed);
@@ -9,7 +11,7 @@ torch.manualSeed(seed);
 local fname = 'bars';
 --local fname = 'blockImages'
 --local fname = 'mnist'
-local showData = 1;
+local showData = 0;
 local options;
 
 if 'bars' == fname then
@@ -31,6 +33,12 @@ end;
 
 -- Get training data
 X = getData(fname,options,showData)
+
+
+
+
+
+
 
 
 

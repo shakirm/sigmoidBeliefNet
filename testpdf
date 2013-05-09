@@ -1,0 +1,11 @@
+-- test function for slice sampling
+
+function logp = testpdf(x,params)
+	
+	term1 = torch.exp(0.5*torch.pow(x,2));
+	term2 = 1+torch.pow(torch.sin(3*x),2);
+	term3 = 1+torch.pow(torch.cos(5*x),2);
+	
+	logp = torch.cmul(torch.cmul(term1, term2),term3);	
+end;
+
