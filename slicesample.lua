@@ -1,4 +1,4 @@
--- General purpose slice sampler 
+-- General purpose slice sampler (axis-aligned sampler)
 -- The sampler returns all samples generated, thus burnin samples must be removed from the calling function. 
 
 -- Shakir, May 2013.
@@ -12,60 +12,56 @@ function slicesample(nSamples, logprob, initVec, width, stepOut, params)
 	local maxLoop = 200;
 	-- make change later to allow widths for each dimension to be specified as a vector.
 	local w = torch.Tensor(1,D):fill(width);
-	print(w)
 	local logp = logprob(x, params);
-	print(logp)
-	
 	local xLeft, xRight, xprime;
 	
 	for iter = 1,nSamples do
-		
+		print(string.format("Iter %d, logp = %f",iter, logp[1][1]))
 		loguprime = torch.log(torch.rand(1)) + logp; -- Inverse CDF sampling for Unif. 
-		print(loguprime)
 		-- Sample all coordinates
 		for d = 1,D do
-			xLeft = x; 
-			xRight = x;
-			xprime = x;
+			xLeft = x:clone(); 
+			xRight = x:clone();
+			xprime = x:clone();
 			
 			-- Construct horizontal interval enclosing X
-			offset = torch.rand(1,1);
-			xLeft[{{1},{d}}] = xLeft[{{1},{d}}] - offset*torch.squeeze(w[{{1},{d}}]);
-			print(xLeft)
-			
-			xRight[{{1},{d}}] = xRight[{{1},{d}}] + torch.add(offset,-1)*torch.squeeze(w[{{1},{d}}]);
-			
-			print(xRight)
-		
+			scale = torch.rand(1,1);
+			xLeft[1][d] = x[1][d] - scale[1][1]*w[1][d];
+			xRight[1][d] = x[1][d] + (1-scale[1][1])*w[1][d];
 			
 			-- Stepping out, steps 3(a) - (e)
-			if 1== stepOut then
-				print(tensor.squeeze(logprob(xLeft, params)))
-				while tensor.squeeze(logprob(xLeft, params)) > torch.squeeze(loguprime) do
-					xLeft[{{1},{d}}] = torch.squeeze(xLeft[{{1},{d}}])  - torch.squeeze(w[{{1},{d}}]);
+			local nn = 0;
+			if 1== stepOut then		
+				local test = torch.squeeze(logprob(xLeft, params)) > torch.squeeze(loguprime);
+				while test do
+					xLeft[1][d] = xLeft[1][d]  - w[1][d];
+					test = torch.squeeze(logprob(xLeft, params)) > torch.squeeze(loguprime);
 				end;
-				
-				while logprob(xRight, params) > loguprime do
-					xRight[{{1},{d}}] = torch.squeeze(xRight[{{1},{d}}])  + torch.squeeze(w[{{1},{d}}]);
+					
+				test = torch.squeeze(logprob(xRight, params)) > torch.squeeze(loguprime);
+				while test do
+					xRight[1][d] = xRight[1][d]  + w[1][d];
+					test = torch.squeeze(logprob(xRight, params)) > torch.squeeze(loguprime);
 				end;		
 			end;
-			
+					
 			local done = false;
 			local nLoop = 0;
 			while not done do
 				nLoop = nLoop + 1;
-				
-				xprime[{{1},{d}}] = torch.rand(1)*(xRight[{{1},{d}}] - xLeft[{{1},{d}}]) + xLeft[{{1},{d}}];
+				xprime[1][d] = torch.rand(1)[1]*(xRight[1][d] - xLeft[1][d]) + xLeft[1][d];
 				logp = logprob(xprime, params);
 				
-				if logp > loguprime then
+				test = torch.squeeze(logp) > torch.squeeze(loguprime);
+				if test then
 					done = true;
 				else
 					-- Shrink the interval, steps 8(a),(b)
-					if xprime[{{1},{d}}] > x[{{1},{d}}] then
-						xRight[{{1},{d}}] = xprime[{{1},{d}}]
+					test = xprime[1][d] > x[1][d];
+					if test then
+						xRight[1][d] = xprime[1][d]
 					else
-						xLeft[{{1},{d}}] = xprime[{{1},{d}}]
+						xLeft[1][d] = xprime[1][d]
 					end;
 				end;
 				
@@ -73,11 +69,10 @@ function slicesample(nSamples, logprob, initVec, width, stepOut, params)
 					done = true;
 				end;
 				
-				x[{{1},{d}}] = xprime[{{1},{d}}]
+				x[1][d] = xprime[1][d]
 			end;
 		end;
-		
-		samples[{{iter},{}}] = x;
+		samples[{{iter},{}}] = x:clone();
 	end;
 	
 	return samples
