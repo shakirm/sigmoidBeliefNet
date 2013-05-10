@@ -1,0 +1,26 @@
+
+f = @(x) exp( -x.^2/2).*(1+(sin(3*x)).^2).*(1+(cos(5*x).^2));        
+x = -5:0.01:5;
+true = load('true.csv');
+samples = load('samples.csv');
+
+close all;
+
+[binheight,bincenter] = hist(samples(5000:5:end),50);
+h = bar(bincenter,binheight,'hist');
+set(h,'facecolor',[0.8 .8 1]);
+hold on
+xd = get(gca,'XLim');              % Gets the x-data of the bins.
+binwidth = (xd(2)-xd(1));          % Finds the width of each bin.
+y = 5.6398*binwidth* ...           % Normalization necessary to
+    f(linspace(xd(1),xd(2),1000)); % overplot the histogram.
+plot(linspace(xd(1),xd(2),1000),y,'r')
+
+%
+% hold on
+% xd = get(gca,'XLim');
+% xgrid = linspace(xd(1),xd(2),1000);
+% binwidth = (bincenter(2)-bincenter(1));
+% y = (N*binwidth/area) * f(xgrid);
+% plot(xgrid,y,'r','LineWidth',2)
+% hold off
