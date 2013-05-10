@@ -18,14 +18,13 @@ local params = {};
 	gnuplot.plot(x,hh,'-')
 end;
 	
-nSamples = 7000;
+nSamples = 20000;
 initVec = torch.rand(1,1);
-width = 3;
+width = 5;
 stepOut = 1;
 samples = slicesample(nSamples, testpdf, initVec, width, stepOut, params)
 
 -- Save results
-
 function save_csv(fname, matrix)
 	local f = io.open(fname,'w')
 	if matrix:dim() ~= 2 then error ('2D matrices only') end
@@ -42,5 +41,5 @@ save_csv('true.csv',hh2);
 gnuplot.figure(2)
 gnuplot.plot(torch.squeeze(samples[{{},{1}}]))
 gnuplot.figure(3)
-gnuplot.hist(torch.squeeze(samples[{{5000,samples:size(1)},{1}}]))
+gnuplot.hist(torch.squeeze(samples[{{10000,samples:size(1)},{1}}]))
 	
