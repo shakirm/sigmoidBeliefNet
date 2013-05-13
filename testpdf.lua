@@ -12,3 +12,14 @@ function testpdf(x,params)
 end;
 
 --
+
+function bivariateGauss(x,params)
+	local m = params.mu;
+	local S = params.cov;
+	
+	local diff = torch.add(x,-m);
+	local Sinv = torch.inverse(S)
+		
+	local logp = -torch.mul(torch.mm(torch.mm(diff,Sinv),diff:t()),0.5);
+	return logp;
+end;

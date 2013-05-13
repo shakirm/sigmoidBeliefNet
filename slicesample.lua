@@ -3,8 +3,11 @@
 
 -- Shakir, May 2013.
 -- Following MacKay, Chp 29.7, pg 375
+-- See also Neal (2005?)
 
 function slicesample(nSamples, logprob, initVec, width, stepOut, params)
+	
+	
 	
 	local D = initVec:size(2); -- initVec is 1XD vec
 	local samples = torch.Tensor(nSamples, D): zero();
@@ -29,7 +32,7 @@ function slicesample(nSamples, logprob, initVec, width, stepOut, params)
 			xLeft[1][d] = x[1][d] - scale[1][1]*w[1][d];
 			xRight[1][d] = x[1][d] + (1-scale[1][1])*w[1][d];
 			
-			-- Stepping out, steps 3(a) - (e)
+			-- Stepping out, steps 3(a)-(e)
 			local nn = 0;
 			if 1== stepOut then		
 				local test = torch.squeeze(logprob(xLeft, params)) > torch.squeeze(loguprime);
