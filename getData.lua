@@ -2,9 +2,10 @@
 -- Shakir, May 2013
 
 require 'image'
-require 'dataset/cifar10'
-require 'dataset/mnist'
-require 'dataset/smallnorb'
+require 'csv'
+--require 'dataset/cifar10'
+-- require 'dataset/mnist'
+--require 'dataset/smallnorb'
  
 function getData(fname, options, plot)
 	local x,y;
@@ -83,7 +84,11 @@ function getData(fname, options, plot)
 	    
 		-- gnuplot.imagesc(x)
 	    -- gnuplot.hist(y)
-	    
+	elseif 'test' == fname then
+		local imSize = 30;
+		raw = csv.load{path='data.csv',mode='raw',header=0};
+		x = torch.Tensor(raw);
+		
 	else
 		error('Unknown data set',fname)
 	end;
