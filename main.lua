@@ -30,7 +30,7 @@ elseif 'mnist' == fname then
 	
 elseif 'test' == fname then
 	nObs = 10;
-	imSize = 30;
+	imSize = 5;
 	options = {nObs, imSize}                                                 
 else
 	error('**Error: Unknown data type');
@@ -45,8 +45,8 @@ layer2dim = 5; -- layer 2 dim
 netStruct = torch.Tensor({layer2dim, layer1dim, imSize}); -- from top down.
 
 options = {};
-options.numIter = 20;
-options.stepSize = 1e-3;
+options.numIter = 100;
+options.stepSize = 1e-2;
 
 netStruct = torch.Tensor({1,3,imSize})
 out = variationalSBN(X, netStruct, options);
