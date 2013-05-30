@@ -85,7 +85,7 @@ function getData(fname, options, plot)
 		-- gnuplot.imagesc(x)
 	    -- gnuplot.hist(y)
 	elseif 'test' == fname then
-		local imSize = 30;
+		local imSize = 5;
 		raw = csv.load{path='data.csv',mode='raw',header=0};
 		x = torch.Tensor(raw);
 		

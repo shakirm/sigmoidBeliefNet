@@ -1,6 +1,6 @@
 function createAdjMatrix(dims)
 	-- create the adjaceny matrix to represent the network structure
-	-- Assume that every node is connected to all other nodes in the layer beeath it. This does not include connections between nodes.
+	-- Assume that every node is connected to all other nodes in the layer beneath it. This does not include connections between nodes.
 	local N = torch.sum(dims);
 	local nLayers = (#dims)[1];
 	local adjMatrix = torch.Tensor(N,N):zero();

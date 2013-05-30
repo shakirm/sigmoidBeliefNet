@@ -9,3 +9,7 @@ function sigmoid(x)
         
         return val;
 end;
+
+function isnan(x)
+    return not (x == x);
+end;

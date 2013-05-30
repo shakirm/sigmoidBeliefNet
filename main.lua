@@ -2,16 +2,16 @@
 -- Shakir, May 2013
 
 require 'getData'
---require 'sampleSBN'
 require 'variationalSBN'
 
 local seed = 1;
 torch.manualSeed(seed);
 
-fname = 'test'
--- local fname = 'bars';
---local fname = 'blockImages'
+--fname = 'test'
+local fname = 'bars';
+-- local fname = 'blockImages'
 --local fname = 'mnist'
+
 local showData = 0;
 local options, nObs, imSize;
 
@@ -40,17 +40,35 @@ end
 X = getData(fname,options,showData);
 
 -- Specify architecture of network
-layer1dim = 5; -- layer 1 dim
-layer2dim = 5; -- layer 2 dim
-netStruct = torch.Tensor({layer2dim, layer1dim, imSize}); -- from top down.
-
-options = {};
-options.numIter = 100;
+local options = {};
+options.numIter = 500;
 options.stepSize = 1e-2;
+options.estepReps = 10;
+options.updateXi = true;
+options.stepSizeXi = 1e-3;
 
-netStruct = torch.Tensor({1,3,imSize})
+-- Architecture of belief network
+local netStruct = {}
+netStruct.arch = torch.Tensor({5, 7,imSize})
+netStruct.nLayers = #netStruct.arch; -- length(netStruct)
+netStruct.nNodes = torch.sum(netStruct.arch); 
+netStruct.nDims = netStruct.nNodes - netStruct.arch[netStruct.nLayers]; -- total number of latent nodes
+netStruct.weightMatrix, netStruct.meanMask = createAdjMatrix(netStruct.arch);
+
+---------------------- Only for debgging ------------
+-- for test case with fully cconnected DAG
+--local netStruct = {};
+--netStruct.nLayers = 3; -- length(netStruct)
+--netStruct.nNodes = imSize + 5; -- use 10 hidden unites in a dag structure 
+--netStruct.nDims = 5;
+--netStruct.weightMatrix = torch.triu(torch.Tensor(netStruct.nNodes,netStruct.nNodes):fill(1)) -- total number of latent nodes
+--idx = torch.eye(netStruct.nNodes):byte();
+--netStruct.weightMatrix[idx] = 0;
+--netStruct.meanMask = torch.Tensor(1,netStruct.nNodes):fill(1);
+--netStruct.meanMask[{{1},{1, imSize}}] = 0;
+-----------------------------------------------------
+
+-- Inference and Learning
 out = variationalSBN(X, netStruct, options);
-
--- samples = sampleSBN(X, nLayers, nDims)
 
 
