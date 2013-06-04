@@ -13,3 +13,11 @@ end;
 function isnan(x)
     return not (x == x);
 end;
+
+function randperm(n)
+    -- returns a random permutation of integers 1 to n.
+    -- note: changes state of seed through call to rand.
+    
+    tmp, idx = torch.sort(torch.rand(n));
+    return idx;
+end;

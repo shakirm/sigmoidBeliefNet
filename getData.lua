@@ -2,10 +2,10 @@
 -- Shakir, May 2013
 
 require 'image'
-require 'csv'
---require 'dataset/cifar10'
+-- require 'csv'
+-- require 'dataset/cifar10'
 -- require 'dataset/mnist'
---require 'dataset/smallnorb'
+-- require 'dataset/smallnorb'
  
 function getData(fname, options, plot)
 	local x,y;
@@ -18,6 +18,7 @@ function getData(fname, options, plot)
 		
 		x = torch.Tensor(nObs, imSize*imSize);
 		local tmp = torch.Tensor(imSize,imSize):zero();
+		
 		for i = 1,nObs do
 		   local d = torch.zeros(imSize,imSize)
 		   -- flip one column chosen with proba 1/3
